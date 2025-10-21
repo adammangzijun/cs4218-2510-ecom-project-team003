@@ -132,17 +132,14 @@ export async function selectPriceRange(page, label) {
 }
 
 export async function resetHomeFilters(page) {
-    const home = getHomeRegion(page);
-    const onHome = await home.isVisible().catch(() => false);
+    const onHome = await getHomeRegion(page).isVisible().catch(() => false);
     if (!onHome) {
-        return;
+        await page.goto('/');
+        await expectHomeReady(page);
     }
 
     const reset = page.getByRole('button', { name: /reset filters/i });
-    if ((await reset.count()) === 0) {
-        return;
-    }
-    if (!(await reset.isVisible())) {
+    if ((await reset.count()) === 0 || !(await reset.isVisible())) {
         return;
     }
 
@@ -176,6 +173,17 @@ export async function goToAdminCreateCategory(page) {
     await expect(page.getByRole('heading', { name: /manage category/i })).toBeVisible();
     await expect(page.getByTestId('create-category-form')).toBeVisible();
     await expect(page.getByTestId('category-table')).toBeVisible();
+}
+
+export async function goToAdminOrders(page) {
+    await page.getByRole('link', { name: /orders/i }).click();
+    await expect(page.getByRole('heading', { name: /all orders/i })).toBeVisible();
+    await expect(page.getByTestId('order-table')).toBeVisible();
+}
+
+export async function goToAdminProducts(page) {
+    await page.getByRole('link', { name: /products/i }).click();
+    await expect(page.getByRole('heading', { name: /all products/i })).toBeVisible();
 }
 
 export async function headerOpenCategoriesMenu(page) {
@@ -218,9 +226,9 @@ export async function updateCategory(page, oldName, newName) {
 
 export async function deleteCategory(page, name) {
     const table = page.getByTestId('category-table');
-    const row = table.getByRole('row', { name: new RegExp(name, 'i') }).first();
+    const row = table.getByRole('row', { name: new RegExp(escapeRegExp(name), 'i') }).first();
     await row.getByRole('button', { name: /delete/i }).click();
-    await expect(table).not.toContainText(name);
+    await expect(table.getByRole('cell', { name: exactReg(name) })).toHaveCount(0);
 }
 
 export async function registerUser(page, user) {
