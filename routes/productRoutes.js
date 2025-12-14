@@ -63,6 +63,11 @@ router.get("/search/:keyword", searchProductController);
 router.get("/related-product/:pid/:cid", relatedProductController);
 
 //category wise product
-router.get("/product-category/:slug", productCategoryController);
+router.get("/product-category/:slug", 
+  (req, res, next) => {
+    req.app.locals.productViewCounter.labels(req.params.slug).inc();
+    next();
+  },
+  productCategoryController);
 
 export default router;

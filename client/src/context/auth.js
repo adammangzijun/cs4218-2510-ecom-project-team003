@@ -21,7 +21,13 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("auth", JSON.stringify(value));
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await axios.post("/api/v1/auth/logout");  // ⭐ call backend to decrement gauge
+    } catch (err) {
+      console.error("Logout metric not sent", err);
+    }
+
     _setAuth({ user: null, token: "" });
     delete axios.defaults.headers.common["Authorization"];
     localStorage.removeItem("auth");

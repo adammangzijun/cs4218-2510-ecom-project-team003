@@ -15,7 +15,12 @@ const router = express.Router();
 router.post("/register", registerController);
 
 //LOGIN || POST
-router.post("/login", loginController);
+router.post("/login",
+  (req, res, next) => {
+    req.app.locals.activeUsersGauge.inc();
+    next();
+  },
+  loginController);
 
 //Forgot Password || POST
 router.post("/forgot-password", forgotPasswordController);
@@ -32,4 +37,9 @@ router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
 //update profile
 router.put("/profile", requireSignIn, updateProfileController);
 
+//logout
+router.post("/logout", (req, res) => {
+  req.app.locals.activeUsersGauge.dec();
+  res.send({ message: "Logged out" });
+});
 export default router;
