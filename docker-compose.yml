@@ -1,0 +1,28 @@
+services:
+  frontend:
+    build: ./client
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - backend
+
+  backend:
+    build: .
+    ports:
+      - "6060:6060"
+    restart: always
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+
+  db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data:
