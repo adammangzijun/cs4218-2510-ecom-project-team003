@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
 import { useAuth } from "../../context/auth";
+import { api } from "../../api/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,7 +32,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("/api/v1/auth/login", {
+      const res = await api.post("/api/v1/auth/login", {
         email,
         password,
       });

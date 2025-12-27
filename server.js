@@ -29,7 +29,10 @@ if (process.env.NODE_ENV === 'test-ui') {
 const app = express();
 
 //middlewares
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 
