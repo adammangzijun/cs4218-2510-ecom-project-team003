@@ -1,22 +1,9 @@
 pipeline {
-    agent any
-
+    agent { dockerfile true }
     stages {
-
-        stage('Checkout Code') {
+        stage('Test') {
             steps {
-                checkout scm
-                sh 'docker version'
-            }
-        }
-
-        stage('Rebuild & Restart Containers') {
-            steps {
-                sh '''
-                  docker compose down
-                  docker compose build
-                  docker compose up -d
-                '''
+                sh 'curl http://localhost:6060'
             }
         }
     }
