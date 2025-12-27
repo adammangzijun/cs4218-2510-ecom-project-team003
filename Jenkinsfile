@@ -6,6 +6,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 checkout scm
+                sh 'docker version'
             }
         }
 
