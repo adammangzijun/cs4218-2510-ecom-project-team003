@@ -11,11 +11,9 @@ pipeline {
 
         stage('Rebuild & Restart Containers') {
             steps {
-                sh '''
-                  docker compose down
-                  docker compose build
-                  docker compose up -d
-                '''
+              sh 'docker compose down'
+              sh 'docker compose build'
+              sh 'docker compose up -d'
             }
         }
     }
